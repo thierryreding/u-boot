@@ -6,15 +6,59 @@ choice
 
 config TEGRA20
 	bool "Tegra20 family"
+	select SUPPORT_SPL
+	select SPL
+	select SPL_DISABLE_OF_CONTROL
+	select OF_CONTROL
+	select CPU_V7
+	select DM
+	select DM_SPI_FLASH
+	select DM_SERIAL
+	select DM_I2C
+	select DM_SPI
+	select DM_GPIO
 
 config TEGRA30
 	bool "Tegra30 family"
+	select SUPPORT_SPL
+	select SPL
+	select SPL_DISABLE_OF_CONTROL
+	select OF_CONTROL
+	select CPU_V7
+	select DM
+	select DM_SPI_FLASH
+	select DM_SERIAL
+	select DM_I2C
+	select DM_SPI
+	select DM_GPIO
 
 config TEGRA114
 	bool "Tegra114 family"
+	select SUPPORT_SPL
+	select SPL
+	select SPL_DISABLE_OF_CONTROL
+	select OF_CONTROL
+	select CPU_V7
+	select DM
+	select DM_SPI_FLASH
+	select DM_SERIAL
+	select DM_I2C
+	select DM_SPI
+	select DM_GPIO
 
 config TEGRA124
 	bool "Tegra124 family"
+	select SUPPORT_SPL
+	select SPL
+	select SPL_DISABLE_OF_CONTROL
+	select OF_CONTROL
+	select CPU_V7
+	select DM
+	select DM_SPI_FLASH
+	select DM_SERIAL
+	select DM_I2C
+	select DM_SPI
+	select DM_GPIO
 
 endchoice
 
