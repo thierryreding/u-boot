@@ -73,6 +73,7 @@ static const char * const compat_names[COMPAT_COUNT] = {
 	COMPAT(INTEL_MODEL_206AX, "intel,model-206ax"),
 	COMPAT(INTEL_GMA, "intel,gma"),
 	COMPAT(AMS_AS3722, "ams,as3722"),
+	COMPAT(MAXIM_77620, "maxim,max77620"),
 	COMPAT(INTEL_ICH_SPI, "intel,ich-spi"),
 	COMPAT(INTEL_QRK_MRC, "intel,quark-mrc"),
 	COMPAT(INTEL_X86_PINCTRL, "intel,x86-pinctrl"),
