@@ -175,7 +175,8 @@ void protect_secure_section(void)
 
 #if (defined(CONFIG_ARMV7_NONSEC) || defined(CONFIG_ARM64)) && \
     (defined(CONFIG_TEGRA30) || defined(CONFIG_TEGRA114) || \
-     defined(CONFIG_TEGRA124) || defined(CONFIG_TEGRA132))
+     defined(CONFIG_TEGRA124) || defined(CONFIG_TEGRA132) || \
+     defined(CONFIG_TEGRA210))
 static void tegra_smmu_flush(struct mc_ctlr *mc)
 {
 	(void)readl(&mc->mc_smmu_config);
@@ -194,8 +195,12 @@ void tegra_smmu_enable(void)
 	writel(0xffffffff, &mc->mc_smmu_translation_enable_0);
 	writel(0xffffffff, &mc->mc_smmu_translation_enable_1);
 	writel(0xffffffff, &mc->mc_smmu_translation_enable_2);
-#if defined(CONFIG_TEGRA124) || defined(CONFIG_TEGRA132)
+#if defined(CONFIG_TEGRA124) || defined(CONFIG_TEGRA132) || \
+    defined(CONFIG_TEGRA210)
 	writel(0xffffffff, &mc->mc_smmu_translation_enable_3);
+#endif
+#if defined(CONFIG_TEGRA210)
+	writel(0xffffffff, &mc->mc_smmu_translation_enable_4);
 #endif
 
 	/*
