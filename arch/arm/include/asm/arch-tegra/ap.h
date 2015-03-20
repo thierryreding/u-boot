@@ -81,7 +81,7 @@ bool tegra_cpu_is_non_secure(void);
 
 #if (defined(CONFIG_ARMV7_NONSEC) || defined(CONFIG_ARM64)) && \
     (defined(CONFIG_TEGRA30) || defined(CONFIG_TEGRA114) || \
-     defined(CONFIG_TEGRA124))
+     defined(CONFIG_TEGRA124) || defined(CONFIG_TEGRA132))
 void tegra_smmu_enable(void);
 #else
 static inline void tegra_smmu_enable(void)

@@ -60,6 +60,17 @@ config TEGRA124
 	select DM_SPI
 	select DM_GPIO
 
+config TEGRA132
+	bool "Tegra132 family"
+	select ARM64
+	select OF_CONTROL
+	select DM
+	select DM_SPI_FLASH
+	select DM_SERIAL
+	select DM_I2C
+	select DM_SPI
+	select DM_GPIO
+
 endchoice
 
 config SYS_MALLOC_F_LEN
@@ -69,5 +80,6 @@ source "arch/arm/mach-tegra/tegra20/Kconfig"
 source "arch/arm/mach-tegra/tegra30/Kconfig"
 source "arch/arm/mach-tegra/tegra114/Kconfig"
 source "arch/arm/mach-tegra/tegra124/Kconfig"
+source "arch/arm/mach-tegra/tegra132/Kconfig"
 
 endif
