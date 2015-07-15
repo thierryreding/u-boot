@@ -173,15 +173,15 @@ void protect_secure_section(void)
 }
 #endif
 
-#if defined(CONFIG_ARMV7_NONSEC) && \
+#if (defined(CONFIG_ARMV7_NONSEC) || defined(CONFIG_ARM64)) && \
     (defined(CONFIG_TEGRA30) || defined(CONFIG_TEGRA114) || \
      defined(CONFIG_TEGRA124))
-static void smmu_flush(struct mc_ctlr *mc)
+static void tegra_smmu_flush(struct mc_ctlr *mc)
 {
 	(void)readl(&mc->mc_smmu_config);
 }
 
-static void smmu_enable(void)
+void tegra_smmu_enable(void)
 {
 	struct mc_ctlr *mc = (struct mc_ctlr *)NV_PA_MC_BASE;
 	u32 value;
@@ -206,11 +206,7 @@ static void smmu_enable(void)
 	value |= TEGRA_MC_SMMU_CONFIG_ENABLE;
 	writel(value, &mc->mc_smmu_config);
 
-	smmu_flush(mc);
-}
-#else
-static void smmu_enable(void)
-{
+	tegra_smmu_flush(mc);
 }
 #endif
 
@@ -267,9 +263,6 @@ void s_init(void)
 
 	/* init the cache */
 	config_cache();
-
-	/* enable SMMU */
-	smmu_enable();
 
 	/* init vpr */
 	config_vpr();

@@ -78,3 +78,13 @@ static inline void config_vpr(void)
 #if defined(CONFIG_TEGRA_SUPPORT_NON_SECURE)
 bool tegra_cpu_is_non_secure(void);
 #endif
+
+#if (defined(CONFIG_ARMV7_NONSEC) || defined(CONFIG_ARM64)) && \
+    (defined(CONFIG_TEGRA30) || defined(CONFIG_TEGRA114) || \
+     defined(CONFIG_TEGRA124))
+void tegra_smmu_enable(void);
+#else
+static inline void tegra_smmu_enable(void)
+{
+}
+#endif
