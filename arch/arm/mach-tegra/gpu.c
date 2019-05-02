@@ -14,11 +14,23 @@
 
 #include <fdt_support.h>
 
-static bool _configured;
+static bool tegra_vpr_locked(void)
+{
+	struct mc_ctlr *mc = (struct mc_ctlr *)NV_PA_MC_BASE;
+	u32 value = readl(&mc->mc_video_protect_reg_ctrl);
+
+	if (value & TEGRA_MC_VIDEO_PROTECT_REG_WRITE_ACCESS_DISABLED)
+		return true;
+
+	return false;
+}
 
 void tegra_gpu_config(void)
 {
 	struct mc_ctlr *mc = (struct mc_ctlr *)NV_PA_MC_BASE;
+
+	if (tegra_vpr_locked())
+		return;
 
 #if defined(CONFIG_TEGRA_SUPPORT_NON_SECURE)
 	if (!tegra_cpu_is_non_secure())
@@ -33,8 +45,6 @@ void tegra_gpu_config(void)
 	}
 
 	debug("configured VPR\n");
-
-	_configured = true;
 }
 
 #if defined(CONFIG_OF_LIBFDT)
@@ -43,7 +53,7 @@ int tegra_gpu_enable_node(void *blob, const char *compat)
 {
 	int offset;
 
-	if (!_configured)
+	if (!tegra_vpr_locked())
 		return 0;
 
 	offset = fdt_node_offset_by_compatible(blob, -1, compat);
