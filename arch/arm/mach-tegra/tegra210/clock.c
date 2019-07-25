@@ -1067,59 +1067,6 @@ void arch_timer_init(void)
 	debug("%s: TSC CNTCR = 0x%08X\n", __func__, val);
 }
 
-#define PLLREFE_MISC			0x4c8
-#define  PLLREFE_MISC_LOCK		BIT(27)
-#define  PLLREFE_MISC_IDDQ		BIT(24)
-
-#define PLLREFE_BASE			0x4c4
-#define  PLLREFE_BASE_BYPASS		BIT(31)
-#define  PLLREFE_BASE_ENABLE		BIT(30)
-#define  PLLREFE_BASE_REF_DIS		BIT(29)
-#define  PLLREFE_BASE_KCP(kcp)		(((kcp) & 0x3) << 27)
-#define  PLLREFE_BASE_KVCO		BIT(26)
-#define  PLLREFE_BASE_DIVP(p)		(((p) & 0x1f) << 16)
-#define  PLLREFE_BASE_DIVN(n)		(((n) & 0xff) << 8)
-#define  PLLREFE_BASE_DIVM(m)		(((m) & 0xff) << 0)
-
-static int tegra_pllref_enable(void)
-{
-	u32 value;
-	unsigned long start;
-
-	/*
-	 * This sequence comes from Tegra X1 TRM section "Cold Boot, with no
-	 * Recovery Mode or Boot from USB", sub-section "PLLREFE".
-	 */
-
-	value = readl(NV_PA_CLK_RST_BASE + PLLREFE_MISC);
-	value &= ~PLLREFE_MISC_IDDQ;
-	writel(value, NV_PA_CLK_RST_BASE + PLLREFE_MISC);
-
-	udelay(5);
-
-	value = PLLREFE_BASE_ENABLE |
-		PLLREFE_BASE_KCP(0) |
-		PLLREFE_BASE_DIVP(0) |
-		PLLREFE_BASE_DIVN(0x41) |
-		PLLREFE_BASE_DIVM(4);
-	writel(value, NV_PA_CLK_RST_BASE + PLLREFE_BASE);
-
-	debug("waiting for pllrefe lock\n");
-	start = get_timer(0);
-	while (get_timer(start) < 250) {
-		value = readl(NV_PA_CLK_RST_BASE + PLLREFE_MISC);
-		if (value & PLLREFE_MISC_LOCK)
-			break;
-	}
-	if (!(value & PLLREFE_MISC_LOCK)) {
-		debug("  timeout\n");
-		return -ETIMEDOUT;
-	}
-	debug("  done\n");
-
-	return 0;
-}
-
 #define PLLE_SS_CNTL 0x68
 #define  PLLE_SS_CNTL_SSCINCINTR(x) (((x) & 0x3f) << 24)
 #define  PLLE_SS_CNTL_SSCINC(x) (((x) & 0xff) << 16)
@@ -1157,9 +1104,6 @@ int tegra_plle_enable(void)
 {
 	u32 value;
 	unsigned long start;
-
-	/* PLLREF feeds PLLE */
-	tegra_pllref_enable();
 
 	/*
 	 * This sequence comes from Tegra X1 TRM section "Cold Boot, with no
