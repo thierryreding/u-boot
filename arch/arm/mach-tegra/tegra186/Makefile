@@ -2,4 +2,4 @@
 #
 # SPDX-License-Identifier: GPL-2.0
 
-obj-y += cache.o
+obj-y += cache.o smc.o
