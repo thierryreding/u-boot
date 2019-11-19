@@ -6,12 +6,14 @@
 #include <common.h>
 #include <env.h>
 #include <fdtdec.h>
+#include <fdt_support.h>
 #include <i2c.h>
 #include <log.h>
 #include <net.h>
 #include <stdlib.h>
 #include <linux/libfdt.h>
 #include <asm/arch-tegra/board.h>
+#include <asm/arch-tegra/smc.h>
 #include "../p2571/max77620_init.h"
 
 void pin_mux_mmc(void)
@@ -66,10 +68,33 @@ static const char * const nodes[] = {
 	"/host1x@13e00000/display-hub@15200000/display@15220000",
 };
 
+static void ft_kaslr_setup(void *fdt)
+{
+	int offset, err;
+	u8 seed[8];
+
+	err = tegra_generate_random(seed, sizeof(seed));
+	if (err < 0)
+		return;
+
+	err = fdt_check_header(fdt);
+	if (err < 0)
+		return;
+
+	offset = fdt_find_or_add_subnode(fdt, 0, "chosen");
+	if (offset < 0)
+		return;
+
+	err = fdt_setprop(fdt, offset, "kaslr-seed", seed, sizeof(seed));
+	if (err < 0)
+		printf("WARNING: can't set KASLR seed: %s\n", fdt_strerror(err));
+}
+
 int ft_board_setup(void *fdt, struct bd_info *bd)
 {
 	ft_mac_address_setup(fdt);
 	ft_carveout_setup(fdt, nodes, ARRAY_SIZE(nodes));
+	ft_kaslr_setup(fdt);
 
 	return 0;
 }
