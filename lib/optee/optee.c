@@ -193,7 +193,7 @@ int optee_copy_fdt_nodes(const void *old_blob, void *new_blob)
 								 nodename,
 								 &carveout,
 								 NULL, 0,
-								 NULL, true);
+								 NULL, 0);
 				free(oldname);
 
 				if (ret < 0)
