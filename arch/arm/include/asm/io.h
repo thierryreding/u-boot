@@ -40,6 +40,67 @@ static inline void sync(void)
  * read/writes.  We define __arch_*[bl] here, and leave __arch_*w
  * to the architecture specific code.
  */
+#ifdef DEBUG_REGS
+static inline unsigned char __arch_getb(volatile void *address)
+{
+	unsigned char value = *(volatile unsigned char *)address;
+
+	debug("%08lx > %02x\n", (unsigned long)address, value);
+
+	return value;
+}
+
+static inline unsigned char __arch_getw(volatile void *address)
+{
+	unsigned short value = *(volatile unsigned short *)address;
+
+	debug("%08lx > %04x\n", (unsigned long)address, value);
+
+	return value;
+}
+
+static inline unsigned int __arch_getl(volatile void *address)
+{
+	unsigned int value = *(volatile unsigned int *)address;
+
+	debug("%08lx > %08x\n", (unsigned long)address, value);
+
+	return value;
+}
+
+static inline unsigned long __arch_getq(volatile void *address)
+{
+	unsigned long value = *(volatile unsigned long *)address;
+
+	debug("%08lx > %016lx\n", (unsigned long)address, value);
+
+	return value;
+}
+
+static inline void __arch_putb(unsigned char value, volatile void *address)
+{
+	debug("%08lx < %02x\n", (unsigned long)address, value);
+	*(volatile unsigned char *)address = value;
+}
+
+static inline void __arch_putw(unsigned short value, volatile void *address)
+{
+	debug("%08lx < %04x\n", (unsigned long)address, value);
+	*(volatile unsigned short *)address = value;
+}
+
+static inline void __arch_putl(unsigned int value, volatile void *address)
+{
+	debug("%08lx < %08x\n", (unsigned long)address, value);
+	*(volatile unsigned int *)address = value;
+}
+
+static inline void __arch_putq(unsigned long value, volatile void *address)
+{
+	debug("%08lx < %016lx\n", (unsigned long)address, value);
+	*(volatile unsigned long *)address = value;
+}
+#else
 #define __arch_getb(a)			(*(volatile unsigned char *)(a))
 #define __arch_getw(a)			(*(volatile unsigned short *)(a))
 #define __arch_getl(a)			(*(volatile unsigned int *)(a))
@@ -49,6 +110,7 @@ static inline void sync(void)
 #define __arch_putw(v,a)		(*(volatile unsigned short *)(a) = (v))
 #define __arch_putl(v,a)		(*(volatile unsigned int *)(a) = (v))
 #define __arch_putq(v,a)		(*(volatile unsigned long long *)(a) = (v))
+#endif
 
 static inline void __raw_writesb(unsigned long addr, const void *data,
 				 int bytelen)
