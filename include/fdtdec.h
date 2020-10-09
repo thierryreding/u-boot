@@ -1013,6 +1013,8 @@ static inline int fdtdec_set_phandle(void *blob, int node, uint32_t phandle)
 
 /* add "no-map" property */
 #define FDTDEC_RESERVED_MEMORY_NO_MAP (1 << 0)
+/* add "active" property */
+#define FDTDEC_RESERVED_MEMORY_ACTIVE (1 << 1)
 
 /**
  * fdtdec_add_reserved_memory() - add or find a reserved-memory node

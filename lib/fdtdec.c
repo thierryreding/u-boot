@@ -1393,6 +1393,12 @@ int fdtdec_add_reserved_memory(void *blob, const char *basename,
 			return err;
 	}
 
+	if (flags & FDTDEC_RESERVED_MEMORY_ACTIVE) {
+		err = fdt_setprop(blob, node, "active", NULL, 0);
+		if (err < 0)
+			return err;
+	}
+
 	if (phandlep) {
 		err = fdt_generate_phandle(blob, &phandle);
 		if (err < 0)
@@ -1545,6 +1551,9 @@ skip_compat:
 
 	if (flags) {
 		*flags = 0;
+
+		if (fdtdec_get_bool(blob, offset, "active"))
+			*flags |= FDTDEC_RESERVED_MEMORY_ACTIVE;
 
 		if (fdtdec_get_bool(blob, offset, "no-map"))
 			*flags |= FDTDEC_RESERVED_MEMORY_NO_MAP;
