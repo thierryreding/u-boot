@@ -15,7 +15,7 @@
 	};
 
 	aliases {
-		ethernet = "/pcie@1003000/pci@2,0/ethernet@0,0";
+		ethernet0 = "/pcie@1003000/pci@2,0/ethernet@0,0";
 		i2c0 = "/i2c@7000d000";
 		i2c2 = "/i2c@7000c400";
 		i2c3 = "/i2c@7000c500";

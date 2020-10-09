@@ -518,7 +518,10 @@ int cboot_get_ethaddr(const void *fdt, uint8_t mac[ETH_ALEN])
 	const uchar *prop;
 	const char *path;
 
-	path = fdt_get_alias(fdt, "ethernet");
+	path = fdt_get_alias(fdt, "ethernet0");
+	if (!path)
+		path = fdt_get_alias(fdt, "ethernet");
+
 	if (!path) {
 		err = -ENOENT;
 		goto out;

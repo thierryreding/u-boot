@@ -1261,7 +1261,10 @@ int fdtdec_set_ethernet_mac_address(void *fdt, const u8 *mac, size_t size)
 	if (!is_valid_ethaddr(mac))
 		return -EINVAL;
 
-	path = fdt_get_alias(fdt, "ethernet");
+	path = fdt_get_alias(fdt, "ethernet0");
+	if (!path)
+		path = fdt_get_alias(fdt, "ethernet");
+
 	if (!path)
 		return 0;
 

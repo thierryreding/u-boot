@@ -46,7 +46,10 @@ void ft_mac_address_setup(void *fdt)
 	if (err < 0)
 		memset(local_mac, 0, ETH_ALEN);
 
-	path = fdt_get_alias(fdt, "ethernet");
+	path = fdt_get_alias(fdt, "ethernet0");
+	if (!path)
+		path = fdt_get_alias(fdt, "ethernet");
+
 	if (!path)
 		return;
 
@@ -65,7 +68,8 @@ void ft_mac_address_setup(void *fdt)
 			debug("Local MAC address set: %pM\n", local_mac);
 	}
 
-	if (eth_env_get_enetaddr("ethaddr", mac)) {
+	if (eth_env_get_enetaddr("eth0addr", mac) ||
+	    eth_env_get_enetaddr("ethaddr", mac)) {
 		if (memcmp(local_mac, mac, ETH_ALEN) != 0) {
 			err = fdt_setprop(fdt, offset, "mac-address", mac,
 					  ETH_ALEN);
